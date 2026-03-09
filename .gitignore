@@ -14,7 +14,7 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
+#lib/
 lib64/
 parts/
 sdist/
@@ -24,6 +24,9 @@ share/python-wheels/
 *.egg-info/
 .installed.cfg
 *.egg
+talent_benchmark/data
+talent_benchmark/results
+talent_benchmark/results_model
 MANIFEST
 
 # PyInstaller

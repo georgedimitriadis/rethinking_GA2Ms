@@ -1,0 +1,13 @@
+{
+    "lightgbm": {
+        "model": {
+            "n_estimators": 2000
+        },
+        "fit": {},
+        "ood": {
+          "epoch": 7,
+          "reps": -1,
+          "r2_quartile": 3
+        }
+    }
+}

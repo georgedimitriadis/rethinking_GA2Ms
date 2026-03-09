@@ -1,0 +1,16 @@
+{
+    "ecmac": {
+        "model": {
+            "ec": {
+                "mixing_layer_on": [
+                    "categorical",
+                    [
+                        true,
+                        false
+                    ]
+                ]
+            }
+        },
+        "fit": {}
+    }
+}

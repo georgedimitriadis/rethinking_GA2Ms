@@ -1,0 +1,24 @@
+{
+    "ecmac": {
+        "fit": {},
+        "model": {
+          "transformer": {
+            "n_samples": 50
+          },
+          "ec": {
+            "epochs": 5000,
+            "learning_rate": 0.001,
+            "batch_size": 16,
+            "validation_split": 0.1,
+            "arity": 2,
+            "final_linear_layer_regularizer": "None",
+            "mixing_layer_on": false
+          }
+        },
+        "ood": {
+          "epoch": 1,
+          "reps": -1,
+          "r2_quartile": 3
+        }
+    }
+}
