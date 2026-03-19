@@ -10,11 +10,11 @@ start_time=$(date +%s)
 
 # Default values
 dataset_path="talent_benchmark/data"
-ood_dataset_path="talent_benchmark/data_ood/adversarial_based"
+ood_dataset_path="talent_benchmark/data_ood"
 rect_search_iters=300
 k_ratio=0.9
-num_of_repetitions=1
-num_of_worsening_sets=7
+num_of_repetitions=5
+num_of_worsening_sets=20
 use_knr=True
 
 # Parse arguments
@@ -110,7 +110,7 @@ for subfolder in "${subfolders[@]}"; do
             if ! kill -0 $pid 2>/dev/null; then
                 cpu=${pid_to_cpu[$pid]}
                 cpu_free[$cpu]=1
-                unset pid_to_cpu[$pid]
+                unset 'pid_to_cpu[$pid]'
                 echo "Finished: PID $pid (freed CPU $cpu)"
             fi
         done

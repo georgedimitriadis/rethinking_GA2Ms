@@ -88,8 +88,6 @@ t_stat, p_val1 = stats.ttest_ind(df_to_plot[f'{models[0]}_R2 r2_quartile_{r2_qua
 add_stat_annotation(ax, 2, 3, 1 + 0.5 * 2 * 0.1, p_val1)
 
 
-
-
 epochs_for_dif = [r2_quartiles[0], r2_quartiles[1]]
 r2_change = pd.DataFrame(index=zero_epoch_used_datasets, columns=['data_type', 'feature_nums'] + [f'{k}_R2_{i}' for k in models for i in epochs_for_dif] + [f'{k}_R2_diff' for k in models ] + ['models_diff'])
 for dataset in zero_epoch_used_datasets:

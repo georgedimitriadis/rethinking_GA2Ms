@@ -1,4 +1,5 @@
 
+import argparse
 import json
 import pickle
 import os
@@ -11,15 +12,15 @@ from ec.elco import ECRegressor
 from ec import spline_responses as sr
 from analysis.visualisation import spline_visualisation as sg
 
-def get_model(experiment_path, dataset, num_of_points_in_feature = 151):
-    results_model_path = os.path.join('talent_benchmark', 'results_model')
-    data_dir = os.path.join('talent_benchmark', 'data')
+def get_model(data_dir, results_model_path, dataset, num_of_points_in_feature = 151):
+    #results_model_path = os.path.join('talent_benchmark', 'results_model')
+    #data_dir = os.path.join('talent_benchmark', 'data')
 
     #'3D_Estimation_using_RSSI_of_WLAN_dataset'
     if num_of_points_in_feature % 2 == 0:
         num_of_points_in_feature += 1
 
-    model_path = os.path.join(results_model_path, experiment_path, f'{dataset}-ecmac',
+    model_path = os.path.join(results_model_path, f'{dataset}-ecmac',
                               'Norm-none-Nan-mean-new-Cat-ordinal', 'best-val-0.pkl')
 
     N_train_path = os.path.join(data_dir, dataset, 'N_train.npy')
@@ -93,52 +94,31 @@ def create_2d_data_based_splines(model, feature_names, x_train_data, font_size=3
                                     double_feature_composite_spline, vis_dim='2d', from_data=True, save=save,
                                     linewidth=linewidth)
 
-sg.SUBPLOT_ADJUST = {'left': 0.03, 'bottom': 0.03, 'right': 0.97, 'top': 0.9, 'wspace': 0.29, 'hspace': 0.26}
-sg.FIG_SIZE = (12, 6)
-sg.FIG_DPI = 150
+def main():
+    parser = argparse.ArgumentParser()
+    parser.add_argument("-d", "--data_dir", default='./talent_benchmark/data',
+                        help="The folder of the datasets.")
+    parser.add_argument("-l", "--results_model_dir", default='./talent_benchmark/results_model',
+                        help="The folder of the saved models.")
 
-experiment_path = '2026_02_17_base'
-num_of_points_in_feature = 151
+    args = parser.parse_args()
+    data_dir = args.data_dir
+    results_model_path = args.results_model_dir
 
-dataset = 'airfoil_self_noise' # 'airfoil_self_noise' #'concrete_compressive_strength' 'fifa' 'stock'
-model, feature_names, x_train_data = get_model(experiment_path, dataset, num_of_points_in_feature = num_of_points_in_feature)
+    sg.SUBPLOT_ADJUST = {'left': 0.03, 'bottom': 0.03, 'right': 0.97, 'top': 0.9, 'wspace': 0.29, 'hspace': 0.26}
+    sg.FIG_SIZE = (12, 6)
+    sg.FIG_DPI = 150
 
-create_1d_full_response_splines(model, feature_names, num_of_points_in_feature, x_train_data, font_size=8, linewidth=1, save=False)
-create_2d_full_response_splines(model, feature_names, num_of_points_in_feature, x_train_data, font_size=15, linewidth=1,
-                                data_size=3, save=False)
+    num_of_points_in_feature = 151
 
+    dataset = 'airfoil_self_noise' # 'airfoil_self_noise' #'concrete_compressive_strength' 'fifa' 'stock'
+    model, feature_names, x_train_data = get_model(data_dir, results_model_path, dataset,
+                                                   num_of_points_in_feature = num_of_points_in_feature)
 
-# JUST TESTING IDEAS ---------------------------
-datasets_from_ecmac_lgbm_comparison = ['delta_elevators', 'Brazilian_houses_reproduced', 'qsar_aquatic_toxicity', 'houses',
-       '3D_Estimation_using_RSSI_of_WLAN_dataset_complete_1_target', 'kin8nm', 'MiamiHousing2016', 'stock',
-       'Another-Dataset-on-used-Fiat-500-(1538-rows)', 'pole', 'treasury', 'puma8NH', 'airfoil_self_noise',
-       'IEEE80211aa-GATS', 'bank8FM', 'dataset_sales', 'Bias_correction_r', 'wind', 'fifa',
-       'concrete_compressive_strength', 'house_sales_reduced']
+    create_1d_full_response_splines(model, feature_names, num_of_points_in_feature, x_train_data, font_size=8, linewidth=1, save=False)
+    create_2d_full_response_splines(model, feature_names, num_of_points_in_feature, x_train_data, font_size=15, linewidth=1,
+                                    data_size=3, save=False)
 
-for dataset in datasets_from_ecmac_lgbm_comparison:
-    model, feature_names, x_train_data = get_model(experiment_path, dataset,
-                                                   num_of_points_in_feature=num_of_points_in_feature)
-    if len(feature_names)< 16:
-        create_2d_full_response_splines(model, feature_names, num_of_points_in_feature, x_train_data, font_size=30,
-                                        save=dataset)
-        print(dataset, len(feature_names))
-
-stds = {}
-for dataset in datasets_from_ecmac_lgbm_comparison:
-    model, feature_names, x_train_data = get_model(experiment_path, dataset,
-                                                   num_of_points_in_feature=num_of_points_in_feature)
-    if len(feature_names) < 16:
-        print(dataset)
-
-        num_of_features = len(feature_names)
-        double_feature_spline_components, double_feature_composite_spline = \
-            sr.get_double_feature_splines(model, num_of_features, num_of_points_in_feature)
-        stds[dataset] = [ds.std() for ds in double_feature_composite_spline.transpose((2,0,1))]
-
-with open('stds_of_arity2_splines.pcl', 'wb') as f:
-    pickle.dump(stds, f)
-
-min_max_mean_median_of_stds = {}
-for ds in stds:
-    min_max_mean_median_of_stds[ds] = [np.min(stds[ds]), np.max(stds[ds]), np.mean(stds[ds]), np.median(stds[ds])]
+if __name__ == "__main__":
+    main()
 
