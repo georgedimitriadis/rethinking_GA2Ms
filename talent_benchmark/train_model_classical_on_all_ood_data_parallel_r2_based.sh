@@ -120,7 +120,7 @@ for subfolder in "${subfolders[@]}"; do
             if ! kill -0 $pid 2>/dev/null; then
                 cpu=${pid_to_cpu[$pid]}
                 cpu_free[$cpu]=1
-                unset pid_to_cpu[$pid]
+                unset 'pid_to_cpu[$pid]'
                 echo "Finished: PID $pid (freed CPU $cpu)"
             fi
         done

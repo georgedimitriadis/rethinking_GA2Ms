@@ -16,6 +16,7 @@ RESULTS_MODEL_DIR ?= ./results_model
 OOD_DATA_DIR ?= ./data_ood
 MODEL_TYPE ?= ecmac
 R2_QUARTILE ?= 3
+DATASET ?= airfoil_self_noise
 
 ifeq (,$(shell which conda))
 HAS_CONDA=False
@@ -32,20 +33,20 @@ endif
 run_ecmac_on_talent:
 	cd ./talent_benchmark
 	export PYTHONPATH=.:../src
-	KERAS_BACKEND=jax ./training_calls/train_model_classical_on_all_data_parallel.sh --model_type ecmac --dataset_path $(DATA_DIR) --logs_path $(LOGS_DIR) --results_model_path $(RESULTS_MODEL_DIR)
+	KERAS_BACKEND=jax ./train_model_classical_on_all_data_parallel.sh --model_type ecmac --dataset_path $(DATA_DIR) --logs_path $(LOGS_DIR) --results_model_path $(RESULTS_MODEL_DIR)
 
-make_knr_ood_datasets:
+make_knnr_ood_datasets:
 	export PYTHONPATH=./talent_benchmark:./src
-	KERAS_BACKEND=jax ./training_calls/create_ood_data_adversarial_based_parallel.sh --dataset_path $(DATA_DIR) --ood_dataset_path talent_benchmark/data_ood/knr --rect_search_iters 300 --k_ratio 0.9 --num_of_repetitions 5 --num_of_worsening_sets 20 --use_knr True
+	KERAS_BACKEND=jax ./create_ood_data_adversarial_based_parallel.sh --dataset_path $(DATA_DIR) --ood_dataset_path $(OOD_DATA_DIR)  --rect_search_iters 300 --k_ratio 0.9 --num_of_repetitions 5 --num_of_worsening_sets 20 --use_knr True
 
-make_svr_ood_datasets:
+make_vsvr_ood_datasets:
 	export PYTHONPATH=./talent_benchmark:./src
-	KERAS_BACKEND=jax ./training_calls/create_ood_data_adversarial_based_parallel.sh --dataset_path $(DATA_DIR) --ood_dataset_path talent_benchmark/data_ood/svr --rect_search_iters 300 --k_ratio 0.9 --num_of_repetitions 5 --num_of_worsening_sets 20 --use_knr False
+	KERAS_BACKEND=jax ./create_ood_data_adversarial_based_parallel.sh --dataset_path $(DATA_DIR) --ood_dataset_path $(OOD_DATA_DIR)  --rect_search_iters 300 --k_ratio 0.9 --num_of_repetitions 5 --num_of_worsening_sets 20 --use_knr False
 
 run_model_on_ood:
 	cd ./talent_benchmark
 	export PYTHONPATH=.:../src
-	KERAS_BACKEND=jax ./training_calls/train_model_classical_on_all_ood_data_parallel_r2_based.sh --model_type $(MODEL_TYPE) --ood_dataset_path $(OOD_DATA_DIR) --logs_path $(LOGS_DIR) --results_model_path $(RESULTS_MODEL_DIR) --r2_quartile $(R2_QUARTILE)
+	KERAS_BACKEND=jax ./train_model_classical_on_all_ood_data_parallel_r2_based.sh --model_type $(MODEL_TYPE) --ood_dataset_path $(OOD_DATA_DIR) --logs_path $(LOGS_DIR) --results_model_path $(RESULTS_MODEL_DIR) --r2_quartile $(R2_QUARTILE)
 
 create_rankings_vis:
 	export PYTHONPATH=./talent_benchmark:./src
@@ -53,7 +54,7 @@ create_rankings_vis:
 
 create_spline_vis:
 	export PYTHONPATH=./talent_benchmark:./src
-	KERAS_BACKEND=jax python .src/analysis/spline_generation/extract_and_visualise_splines.py --data_dir $(DATA_DIR) --results_model_dir $(RESULTS_MODEL_DIR)
+	KERAS_BACKEND=jax python .src/analysis/spline_generation/extract_and_visualise_splines.py --data_dir $(DATA_DIR) --results_model_dir $(RESULTS_MODEL_DIR) --dataset $(DATASET)
 
 
 ## Delete all compiled Python files

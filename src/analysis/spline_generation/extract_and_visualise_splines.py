@@ -100,6 +100,8 @@ def main():
                         help="The folder of the datasets.")
     parser.add_argument("-l", "--results_model_dir", default='./talent_benchmark/results_model',
                         help="The folder of the saved models.")
+    parser.add_argument("-s", "--dataset", default='airfoil_self_noise',
+                        help="The dataset to visualise.")
 
     args = parser.parse_args()
     data_dir = args.data_dir
@@ -111,7 +113,7 @@ def main():
 
     num_of_points_in_feature = 151
 
-    dataset = 'airfoil_self_noise' # 'airfoil_self_noise' #'concrete_compressive_strength' 'fifa' 'stock'
+    dataset = args.dataset # 'airfoil_self_noise' #'concrete_compressive_strength' 'fifa' 'stock'
     model, feature_names, x_train_data = get_model(data_dir, results_model_path, dataset,
                                                    num_of_points_in_feature = num_of_points_in_feature)
 

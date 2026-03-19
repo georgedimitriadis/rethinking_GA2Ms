@@ -10,11 +10,11 @@ start_time=$(date +%s)
 
 # Default values
 dataset_path="talent_benchmark/data"
-ood_dataset_path="talent_benchmark/data_ood"
+ood_dataset_path="talent_benchmark/data_ood/adversarial_based"
 rect_search_iters=300
 k_ratio=0.9
-num_of_repetitions=5
-num_of_worsening_sets=20
+num_of_repetitions=1
+num_of_worsening_sets=7
 use_knr=True
 
 # Parse arguments
