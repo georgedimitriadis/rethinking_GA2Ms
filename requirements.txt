@@ -1,4 +1,4 @@
-pytorch
+torch
 numpy>=1.26.4
 pysr
 matplotlib
